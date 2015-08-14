@@ -1,9 +1,5 @@
-#!/usr/bin/python
-
 '''
-If you don't want to install easygui, quote line 11 and unquote lines 14 and 24.
-You will have to enter your  desired shutdown time in line 23 (if you want to
-shutdown on the 4th, 3:07pm line 23 has to be: "userinput = ['04','15','07']")
+Thanks to Jay for the initial version of the script!
 '''
 
 from datetime import datetime
@@ -27,10 +23,25 @@ def gui_input():
     except:
         return None
 
+def terminal_input():
+    userinput = []
+    while len(userinput) < 4:
+        if len(userinput) == 0:
+            userinput.append(input('Enter the time of the desired shutdown:\n Month: '))
+        elif len(userinput) == 1:
+            userinput.append(input(' Day: '))
+        elif len(userinput) == 2:
+            userinput.append(input(' Hour: '))
+        elif len(userinput) == 3:
+            userinput.append(input(' Minute: '))
+    return userinput
+
 def wait_for_shutdown(userinput, polling_interval=200):
     int_input = [int(string) for string in userinput]
     shutdown_time = datetime(2015, *int_input)
-    while (datetime.now() - shutdown_time).total_seconds() > 0:
+    delta = (shutdown_time - datetime.now()).total_seconds()
+    while delta > 0:
+        print('System shutting down in ', delta, ' seconds')
         sleep(polling_interval)
     if sys.platform == 'linux2':
         system('shutdown -s') #  = 'shutdown now' in linux
@@ -40,5 +51,5 @@ def wait_for_shutdown(userinput, polling_interval=200):
 
 userinput = gui_input()
 if userinput is None:
-    userinput = tuple(['08', '14', '22', '20'])
+    userinput = terminal_input()
 wait_for_shutdown(userinput)

@@ -43,6 +43,7 @@ def wait_for_shutdown(userinput, polling_interval=200):
     while delta > 0:
         print('System shutting down in ', delta, ' seconds')
         sleep(polling_interval)
+        delta = (shutdown_time - datetime.now()).total_seconds()
     if sys.platform == 'linux2':
         system('shutdown -s') #  = 'shutdown now' in linux
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
